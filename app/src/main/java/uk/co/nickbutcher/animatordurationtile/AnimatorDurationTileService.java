@@ -36,6 +36,8 @@ import android.widget.Toast;
  */
 public class AnimatorDurationTileService extends TileService {
 
+    private static final String TAG = "AnimatorDurationTile";
+
     private static final float[] scales = {
             0f,
             0.5f,
@@ -51,7 +53,7 @@ public class AnimatorDurationTileService extends TileService {
         public void run() {
             final Dialog dialog = new AlertDialog.Builder(getBaseContext(),
                     android.R.style.Theme_Material_Light_Dialog)
-                    .setTitle("Animator duration scale")
+                    .setTitle(R.string.dialog_title)
                     .setSingleChoiceItems(getScaleLabels(), getCurrentScaleIndex(),
                             new DialogInterface.OnClickListener() {
                                 @Override
@@ -114,8 +116,7 @@ public class AnimatorDurationTileService extends TileService {
             scale = Settings.Global.getFloat(getContentResolver(),
                     Settings.Global.ANIMATOR_DURATION_SCALE);
         } catch (Settings.SettingNotFoundException e) {
-            Log.e(AnimatorDurationTileService.class.getSimpleName(),
-                    "Could not read Animator Duration Scale setting", e);
+            Log.e(TAG, "Could not read Animator Duration Scale setting", e);
         }
         return scale;
     }
@@ -126,9 +127,9 @@ public class AnimatorDurationTileService extends TileService {
                     getContentResolver(), Settings.Global.ANIMATOR_DURATION_SCALE, scale);
             return true;
         } catch (SecurityException se) {
-            Toast.makeText(getApplicationContext(), "Need to grant permission. Please run:\n\n" +
-            "adb shell pm grant uk.co.nickbutcher.animatordurationtile " +
-                    "android.permission.WRITE_SECURE_SETTINGS", Toast.LENGTH_LONG).show();
+            String message = getString(R.string.permission_required_toast);
+            Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+            Log.d(TAG, message);
             return false;
         }
     }
@@ -146,9 +147,9 @@ public class AnimatorDurationTileService extends TileService {
         for (int i = 0; i < scales.length; i++) {
             final float scale = scales[i];
             if (scale == 0f) {
-                labels[i] = "Animation off";
+                labels[i] = getString(R.string.animation_off);
             } else {
-                labels[i] = "Animation scale " + getScaleDisplay(scale);
+                labels[i] = getString(R.string.animation_scale, getScaleDisplay(scale));
             }
         }
         return labels;
