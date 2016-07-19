@@ -26,11 +26,23 @@
         android:icon="@mipmap/ic_launcher">
 
         <service
-            android:name=".AnimatorDurationTileService"
+            android:name=".SelectAnimatorDuration"
             android:enabled="true"
             android:exported="true"
             android:icon="@drawable/ic_animator_duration"
             android:label="@string/label_animator_duration_scale"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE"/>
+            </intent-filter>
+        </service>
+
+        <service
+            android:name=".ToggleAnimatorDuration"
+            android:enabled="true"
+            android:exported="true"
+            android:icon="@drawable/ic_animator_duration_5x"
+            android:label="@string/label_toggle_animator_duration_scale"
             android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
             <intent-filter>
                 <action android:name="android.service.quicksettings.action.QS_TILE"/>

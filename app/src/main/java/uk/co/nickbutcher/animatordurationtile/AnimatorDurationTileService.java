@@ -16,9 +16,6 @@
 
 package uk.co.nickbutcher.animatordurationtile;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.content.DialogInterface;
 import android.graphics.drawable.Icon;
 import android.provider.Settings;
 import android.service.quicksettings.Tile;
@@ -34,42 +31,9 @@ import android.widget.Toast;
  * <p>
  * <code>adb shell pm grant uk.co.nickbutcher.animatordurationtile android.permission.WRITE_SECURE_SETTINGS</code>
  */
-public class AnimatorDurationTileService extends TileService {
+public abstract class AnimatorDurationTileService extends TileService {
 
     private static final String TAG = "AnimatorDurationTile";
-
-    private static final float[] scales = {
-            0f,
-            0.5f,
-            1f,
-            1.5f,
-            2f,
-            5f,
-            10f
-    };
-
-    private final Runnable setScaleDialogRunnable = new Runnable() {
-        @Override
-        public void run() {
-            final Dialog dialog = new AlertDialog.Builder(getBaseContext(),
-                    android.R.style.Theme_Material_Light_Dialog)
-                    .setTitle(R.string.dialog_title)
-                    .setSingleChoiceItems(getScaleLabels(), getCurrentScaleIndex(),
-                            new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int index) {
-                                    if (setAnimatorScale(scales[index])) {
-                                        updateTile();
-                                    }
-                                    dialogInterface.dismiss();
-                                }
-                            })
-                    .setNegativeButton(android.R.string.cancel, null)
-                    .setCancelable(true)
-                    .create();
-            showDialog(dialog);
-        }
-    };
 
     public AnimatorDurationTileService() { }
 
@@ -79,19 +43,14 @@ public class AnimatorDurationTileService extends TileService {
         updateTile();
     }
 
-    @Override
-    public void onClick() {
-        unlockAndRun(setScaleDialogRunnable);
-    }
-
-    private void updateTile() {
+    protected void updateTile() {
         final float scale = getAnimatorScale();
         final Tile tile = getQsTile();
         tile.setIcon(Icon.createWithResource(getApplicationContext(), getIcon(scale)));
         tile.updateTile();
     }
 
-    private int getIcon(float scale) {
+    protected int getIcon(float scale) {
         if (scale == 0f) {
             return R.drawable.ic_animator_duration_off;
         } else if (scale == 0.5f) {
@@ -110,7 +69,7 @@ public class AnimatorDurationTileService extends TileService {
         return R.drawable.ic_animator_duration;
     }
 
-    private float getAnimatorScale() {
+    protected float getAnimatorScale() {
         float scale = 1f;
         try {
             scale = Settings.Global.getFloat(getContentResolver(),
@@ -121,7 +80,7 @@ public class AnimatorDurationTileService extends TileService {
         return scale;
     }
 
-    private boolean setAnimatorScale(float scale) {
+    protected boolean setAnimatorScale(float scale) {
         try {
             Settings.Global.putFloat(
                     getContentResolver(), Settings.Global.ANIMATOR_DURATION_SCALE, scale);
@@ -132,34 +91,5 @@ public class AnimatorDurationTileService extends TileService {
             Log.d(TAG, message);
             return false;
         }
-    }
-
-    private int getCurrentScaleIndex() {
-        final float currentScale = getAnimatorScale();
-        for (int i = 0; i < scales.length; i++) {
-            if (currentScale == scales[i]) return i;
-        }
-        return -1;
-    }
-
-    private CharSequence[] getScaleLabels() {
-        final CharSequence[] labels = new CharSequence[scales.length];
-        for (int i = 0; i < scales.length; i++) {
-            final float scale = scales[i];
-            if (scale == 0f) {
-                labels[i] = getString(R.string.animation_off);
-            } else {
-                labels[i] = getString(R.string.animation_scale, getScaleDisplay(scale));
-            }
-        }
-        return labels;
-    }
-
-    private CharSequence getScaleDisplay(float scale) {
-        final int roundedScale = Math.round(scale);
-        if (roundedScale == scale) {
-            return roundedScale + "x";
-        }
-        return scale + "x";
     }
 }
