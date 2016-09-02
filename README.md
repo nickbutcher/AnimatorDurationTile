@@ -5,12 +5,15 @@ A quick settings tile to quickly set the animator duration scale. Two tiles are 
 1. A toggle which switches between 5x & 1x duration scales.
 2. A selector which offers the full choice of scales.
 
-Note that changing the animator duration requires you to *manually grant permission* to allow the app to alter this setting. This can be done via `adb` using the following command:
+Note that this app requires you to **manually grant permission** to allow the app to alter the animator duration setting. To do this, issue the following `adb` command:
 
 `adb shell pm grant uk.co.nickbutcher.animatordurationtile android.permission.WRITE_SECURE_SETTINGS`
 
 
 <img src="screenshots/duration_scale_toggle_demo.gif" align="middle">
+
+
+This is not an official Google product.
 
 
 ### License
