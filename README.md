@@ -9,6 +9,7 @@ Note that this app requires you to **manually grant permission** to allow the ap
 
 `adb shell pm grant uk.co.nickbutcher.animatordurationtile android.permission.WRITE_SECURE_SETTINGS`
 
+👉 **[Download APK](https://github.com/nickbutcher/AnimatorDurationTile/releases)** 👈
 
 <img src="screenshots/duration_scale_toggle_demo.gif" align="middle">
 
