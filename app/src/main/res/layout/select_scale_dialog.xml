@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright 2016 Google Inc.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  -->
+
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    tools:context=".SelectAnimatorDuration">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingTop="@dimen/spacing_normal">
+
+            <!-- Using CheckedTextView rather than RadioButton for greater control over styling -->
+
+            <CheckedTextView
+                android:id="@+id/scale_off"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="?android:listPreferredItemHeightSmall"
+                android:gravity="start|center_vertical"
+                android:paddingStart="@dimen/padding_normal"
+                android:paddingEnd="@dimen/padding_normal"
+                android:drawablePadding="@dimen/padding_normal"
+                android:onClick="scaleClick"
+                android:text="@string/animation_off"
+                style="@style/Theme.Widget.RadioButton" />
+
+            <CheckedTextView
+                android:id="@+id/scale_0_5"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="?android:listPreferredItemHeightSmall"
+                android:gravity="start|center_vertical"
+                android:paddingStart="@dimen/padding_normal"
+                android:paddingEnd="@dimen/padding_normal"
+                android:drawablePadding="@dimen/padding_normal"
+                android:onClick="scaleClick"
+                android:text="@string/animation_scale_0_5x"
+                style="@style/Theme.Widget.RadioButton" />
+
+            <CheckedTextView
+                android:id="@+id/scale_1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="?android:listPreferredItemHeightSmall"
+                android:gravity="start|center_vertical"
+                android:paddingStart="@dimen/padding_normal"
+                android:paddingEnd="@dimen/padding_normal"
+                android:drawablePadding="@dimen/padding_normal"
+                android:onClick="scaleClick"
+                android:text="@string/animation_scale_1x"
+                style="@style/Theme.Widget.RadioButton" />
+
+            <CheckedTextView
+                android:id="@+id/scale_1_5"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="?android:listPreferredItemHeightSmall"
+                android:gravity="start|center_vertical"
+                android:paddingStart="@dimen/padding_normal"
+                android:paddingEnd="@dimen/padding_normal"
+                android:drawablePadding="@dimen/padding_normal"
+                android:onClick="scaleClick"
+                android:text="@string/animation_scale_1_5x"
+                style="@style/Theme.Widget.RadioButton" />
+
+            <CheckedTextView
+                android:id="@+id/scale_2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="?android:listPreferredItemHeightSmall"
+                android:gravity="start|center_vertical"
+                android:paddingStart="@dimen/padding_normal"
+                android:paddingEnd="@dimen/padding_normal"
+                android:drawablePadding="@dimen/padding_normal"
+                android:onClick="scaleClick"
+                android:text="@string/animation_scale_2x"
+                style="@style/Theme.Widget.RadioButton" />
+
+            <CheckedTextView
+                android:id="@+id/scale_5"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="?android:listPreferredItemHeightSmall"
+                android:gravity="start|center_vertical"
+                android:paddingStart="@dimen/padding_normal"
+                android:paddingEnd="@dimen/padding_normal"
+                android:drawablePadding="@dimen/padding_normal"
+                android:onClick="scaleClick"
+                android:text="@string/animation_scale_5x"
+                style="@style/Theme.Widget.RadioButton" />
+
+            <CheckedTextView
+                android:id="@+id/scale_10"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="?android:listPreferredItemHeightSmall"
+                android:gravity="start|center_vertical"
+                android:paddingStart="@dimen/padding_normal"
+                android:paddingEnd="@dimen/padding_normal"
+                android:drawablePadding="@dimen/padding_normal"
+                android:onClick="scaleClick"
+                android:text="@string/animation_scale_10x"
+                style="@style/Theme.Widget.RadioButton" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <Button
+        android:id="@+id/cancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_marginStart="@dimen/spacing_normal"
+        android:layout_marginEnd="@dimen/spacing_normal"
+        android:layout_marginBottom="@dimen/spacing_normal"
+        android:onClick="cancel"
+        android:text="@android:string/cancel"
+        style="@android:style/Widget.Material.Light.Button.Borderless.Colored" />
+
+</LinearLayout>

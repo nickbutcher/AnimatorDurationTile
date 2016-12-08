@@ -16,63 +16,52 @@
 
 package uk.co.nickbutcher.animatordurationtile;
 
-import android.graphics.drawable.Icon;
+import android.content.ContentResolver;
+import android.content.Context;
 import android.provider.Settings;
-import android.service.quicksettings.Tile;
-import android.service.quicksettings.TileService;
+import android.support.annotation.DrawableRes;
+import android.support.annotation.FloatRange;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.widget.Toast;
 
 /**
- * A {@link TileService quick settings tile} for scaling animation durations.
+ * A helper class for working with the system animator duration scale.
  * <p>
  * Note that this requires a system level permission, so consumers <b>must</b> run this
  * <code>adb</code> command to use.
  * <p>
  * <code>adb shell pm grant uk.co.nickbutcher.animatordurationtile android.permission.WRITE_SECURE_SETTINGS</code>
  */
-public abstract class AnimatorDurationTileService extends TileService {
+class AnimatorDurationScaler {
 
-    private static final String TAG = "AnimatorDurationTile";
+    private static final String TAG = "AnimatorDurationScaler";
 
-    public AnimatorDurationTileService() { }
+    private AnimatorDurationScaler() { }
 
-    @Override
-    public void onStartListening() {
-        super.onStartListening();
-        updateTile();
-    }
-
-    protected void updateTile() {
-        final float scale = getAnimatorScale();
-        final Tile tile = getQsTile();
-        tile.setIcon(Icon.createWithResource(getApplicationContext(), getIcon(scale)));
-        tile.updateTile();
-    }
-
-    protected int getIcon(float scale) {
-        if (scale == 0f) {
+    static @DrawableRes int getIcon(float scale) {
+        if (scale <= 0f) {
             return R.drawable.ic_animator_duration_off;
-        } else if (scale == 0.5f) {
+        } else if (scale <= 0.5f) {
             return R.drawable.ic_animator_duration_half_x;
-        } else if (scale == 1f) {
+        } else if (scale <= 1f) {
             return R.drawable.ic_animator_duration_1x;
-        } else if (scale == 1.5f) {
+        } else if (scale <= 1.5f) {
             return R.drawable.ic_animator_duration_1_5x;
-        } else if (scale == 2f) {
+        } else if (scale <= 2f) {
             return R.drawable.ic_animator_duration_2x;
-        } else if (scale == 5f) {
+        } else if (scale <= 5f) {
             return R.drawable.ic_animator_duration_5x;
-        } else if (scale == 10f) {
+        } else if (scale <= 10f) {
             return R.drawable.ic_animator_duration_10x;
         }
         return R.drawable.ic_animator_duration;
     }
 
-    protected float getAnimatorScale() {
+    static float getAnimatorScale(@NonNull ContentResolver contentResolver) {
         float scale = 1f;
         try {
-            scale = Settings.Global.getFloat(getContentResolver(),
+            scale = Settings.Global.getFloat(contentResolver,
                     Settings.Global.ANIMATOR_DURATION_SCALE);
         } catch (Settings.SettingNotFoundException e) {
             Log.e(TAG, "Could not read Animator Duration Scale setting", e);
@@ -80,14 +69,16 @@ public abstract class AnimatorDurationTileService extends TileService {
         return scale;
     }
 
-    protected boolean setAnimatorScale(float scale) {
+    static boolean setAnimatorScale(
+            @NonNull Context context,
+            @FloatRange(from = 0.0, to = 10.0) float scale) {
         try {
             Settings.Global.putFloat(
-                    getContentResolver(), Settings.Global.ANIMATOR_DURATION_SCALE, scale);
+                    context.getContentResolver(), Settings.Global.ANIMATOR_DURATION_SCALE, scale);
             return true;
         } catch (SecurityException se) {
-            String message = getString(R.string.permission_required_toast);
-            Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+            String message = context.getString(R.string.permission_required_toast);
+            Toast.makeText(context.getApplicationContext(), message, Toast.LENGTH_LONG).show();
             Log.d(TAG, message);
             return false;
         }

@@ -16,27 +16,40 @@
 
 package uk.co.nickbutcher.animatordurationtile;
 
+import android.graphics.drawable.Icon;
+import android.service.quicksettings.Tile;
 import android.service.quicksettings.TileService;
+
+import static uk.co.nickbutcher.animatordurationtile.AnimatorDurationScaler.getAnimatorScale;
+import static uk.co.nickbutcher.animatordurationtile.AnimatorDurationScaler.getIcon;
 
 /**
  * A {@link TileService quick settings tile} for scaling animation durations. Toggles between 1x and
  * 5x animator duration scales.
- * <p>
- * Note that this requires a system level permission, so consumers <b>must</b> run this
- * <code>adb</code> command to use.
- * <p>
- * <code>adb shell pm grant uk.co.nickbutcher.animatordurationtile android.permission.WRITE_SECURE_SETTINGS</code>
  */
-public class ToggleAnimatorDuration extends AnimatorDurationTileService {
+public class ToggleAnimatorDuration extends TileService {
 
     public ToggleAnimatorDuration() { }
 
     @Override
-    public void onClick() {
-        final float current = getAnimatorScale();
-        final float target = current == 1f ? 5f : 1f;
-        setAnimatorScale(target);
+    public void onStartListening() {
+        super.onStartListening();
         updateTile();
+    }
+
+    @Override
+    public void onClick() {
+        final float current = getAnimatorScale(getContentResolver());
+        final float target = current == 1f ? 5f : 1f;
+        AnimatorDurationScaler.setAnimatorScale(this, target);
+        updateTile();
+    }
+
+    private void updateTile() {
+        final float scale = getAnimatorScale(getContentResolver());
+        final Tile tile = getQsTile();
+        tile.setIcon(Icon.createWithResource(getApplicationContext(), getIcon(scale)));
+        tile.updateTile();
     }
 
 }

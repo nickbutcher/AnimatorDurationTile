@@ -25,5 +25,11 @@
         adb shell pm grant uk.co.nickbutcher.animatordurationtile
         android.permission.WRITE_SECURE_SETTINGS</string>
     <string name="animation_off">Animation off</string>
-    <string name="animation_scale">Animation scale %s</string>
+    <string name="animation_scale_0_5x">Animation scale .5x</string>
+    <string name="animation_scale_1x">Animation scale 1x</string>
+    <string name="animation_scale_1_5x">Animation scale 1.5x</string>
+    <string name="animation_scale_2x">Animation scale 2x</string>
+    <string name="animation_scale_5x">Animation scale 5x</string>
+    <string name="animation_scale_10x">Animation scale 10x</string>
+
 </resources>

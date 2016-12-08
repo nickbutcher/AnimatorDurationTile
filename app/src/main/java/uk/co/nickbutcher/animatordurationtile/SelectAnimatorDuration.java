@@ -16,93 +16,79 @@
 
 package uk.co.nickbutcher.animatordurationtile;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.content.DialogInterface;
-import android.graphics.drawable.Icon;
-import android.provider.Settings;
-import android.service.quicksettings.Tile;
-import android.service.quicksettings.TileService;
-import android.util.Log;
-import android.widget.Toast;
+import android.app.Activity;
+import android.os.Bundle;
+import android.support.annotation.FloatRange;
+import android.support.annotation.IdRes;
+import android.support.annotation.NonNull;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Checkable;
+import android.widget.CheckedTextView;
 
 /**
- * A {@link TileService quick settings tile} for scaling animation durations. Presents a dialog
- * allowing you to pick the desired animator duration scale.
- * <p>
- * Note that this requires a system level permission, so consumers <b>must</b> run this
- * <code>adb</code> command to use.
- * <p>
- * <code>adb shell pm grant uk.co.nickbutcher.animatordurationtile android.permission.WRITE_SECURE_SETTINGS</code>
+ * An Activity which allows selecting the animator duration scale from a full list, accessed by
+ * long pressing the quick action tile.
  */
-public class SelectAnimatorDuration extends AnimatorDurationTileService {
-
-    private static final float[] scales = {
-            0f,
-            0.5f,
-            1f,
-            1.5f,
-            2f,
-            5f,
-            10f
-    };
-
-    private final Runnable setScaleDialogRunnable = new Runnable() {
-        @Override
-        public void run() {
-            final Dialog dialog = new AlertDialog.Builder(getBaseContext(),
-                    android.R.style.Theme_Material_Light_Dialog)
-                    .setTitle(R.string.dialog_title)
-                    .setSingleChoiceItems(getScaleLabels(), getCurrentScaleIndex(),
-                            new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int index) {
-                                    if (setAnimatorScale(scales[index])) {
-                                        updateTile();
-                                    }
-                                    dialogInterface.dismiss();
-                                }
-                            })
-                    .setNegativeButton(android.R.string.cancel, null)
-                    .setCancelable(true)
-                    .create();
-            showDialog(dialog);
-        }
-    };
-
-    public SelectAnimatorDuration() { }
+public class SelectAnimatorDuration extends Activity {
 
     @Override
-    public void onClick() {
-        unlockAndRun(setScaleDialogRunnable);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.select_scale_dialog);
+        float scale = AnimatorDurationScaler.getAnimatorScale(getContentResolver());
+        ((Checkable) findViewById(getScaleItemId(scale))).setChecked(true);
     }
 
-    private int getCurrentScaleIndex() {
-        final float currentScale = getAnimatorScale();
-        for (int i = 0; i < scales.length; i++) {
-            if (currentScale == scales[i]) return i;
+    public void scaleClick(View v) {
+        uncheckAllChildren((ViewGroup) v.getParent());
+        ((CheckedTextView) v).setChecked(true);
+        AnimatorDurationScaler.setAnimatorScale(this, getScale(v.getId()));
+        finishAfterTransition();
+    }
+
+    public void cancel(View v) {
+        finishAfterTransition();
+    }
+
+    private float getScale(@IdRes int id) {
+        switch (id) {
+            case R.id.scale_off: return 0f;
+            case R.id.scale_0_5: return 0.5f;
+            case R.id.scale_1_5: return 1.5f;
+            case R.id.scale_2: return 2f;
+            case R.id.scale_5: return 5f;
+            case R.id.scale_10: return 10f;
+            default:
+                return 1f;
         }
-        return -1;
     }
 
-    private CharSequence[] getScaleLabels() {
-        final CharSequence[] labels = new CharSequence[scales.length];
-        for (int i = 0; i < scales.length; i++) {
-            final float scale = scales[i];
-            if (scale == 0f) {
-                labels[i] = getString(R.string.animation_off);
-            } else {
-                labels[i] = getString(R.string.animation_scale, getScaleDisplay(scale));
+    private @IdRes int getScaleItemId(@FloatRange(from = 0.0, to = 10.0) float scale) {
+        if (scale <= 0f) {
+            return R.id.scale_off;
+        } else if (scale <= 0.5f) {
+            return R.id.scale_0_5;
+        } else if (scale <= 1f) {
+            return R.id.scale_1;
+        } else if (scale <= 1.5f) {
+            return R.id.scale_1_5;
+        } else if (scale <= 2f) {
+            return R.id.scale_2;
+        } else if (scale <= 5f) {
+            return R.id.scale_5;
+        } else {
+            return R.id.scale_10;
+        }
+    }
+
+    private void uncheckAllChildren(@NonNull ViewGroup vg) {
+        for (int i = vg.getChildCount() - 1; i >= 0; i--) {
+            View child = vg.getChildAt(i);
+            if (child instanceof Checkable) {
+                ((Checkable) child).setChecked(false);
             }
         }
-        return labels;
     }
 
-    private CharSequence getScaleDisplay(float scale) {
-        final int roundedScale = Math.round(scale);
-        if (roundedScale == scale) {
-            return roundedScale + "x";
-        }
-        return scale + "x";
-    }
 }
