@@ -1,9 +1,9 @@
 # Animator Duration Quick Settings Tile
 
-A quick settings tile to quickly set the animator duration scale. Two tiles are offered:
+A quick settings tile to quickly toggle the animator duration scale:
 
-1. A toggle which switches between 5x & 1x duration scales.
-2. A selector which offers the full choice of scales.
+1. Pressing the tile toggles between 5x & 1x duration scales.
+2. Long pressing the tile allows selecting from the full choice of scales.
 
 Note that this app requires you to **manually grant permission** to allow the app to alter the animator duration setting. To do this, issue the following `adb` command:
 
